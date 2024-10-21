@@ -1,0 +1,6 @@
+torchsummary
+torch
+torchvision
+scikit-learn
+opencv-python
+tqdm
