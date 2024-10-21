@@ -3,6 +3,10 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import torchvision.models as models
+import gdown
+
+st.title("Fruit Classification App")
+st.write("This is a simple image classification web app to predict fruit classes.")
 
 # Map the class number to the class name
 cat_to_name = {
@@ -19,11 +23,18 @@ cat_to_name = {
 # Load the pre-trained VGG model with modification
 vgg_model = models.vgg11(pretrained=True)
 vgg_model.classifier[6] = torch.nn.Linear(vgg_model.classifier[6].in_features, 9)
-vgg_model.load_state_dict(torch.load('./fruit_classification.pth', map_location=torch.device('cpu')))
-vgg_model.eval()
 
-st.title("Fruit Classification App")
-st.write("This is a simple image classification web app to predict fruit classes.")
+try:
+    vgg_model.load_state_dict(torch.load('./fruit_classification.pth', map_location=torch.device('cpu')))
+except FileNotFoundError:
+    with st.spinner("Downloading model. Please wait..."):
+        # if not found, download state from Google Drive link
+        url = 'https://drive.google.com/uc?id=1tAl7mNIfGPe2ulyzv3CGlOmI_Ft26WeF'
+        output = './fruit_classification.pth'
+        gdown.download(url, output, quiet=False)
+        vgg_model.load_state_dict(torch.load(output, map_location=torch.device('cpu')))
+
+vgg_model.eval()
 
 st.write("""Please upload an image file for the model to make predictions. The predicted fruit class will be displayed. 
          The model is trained on the following classes: Apple, Banana, Cherry, Chickoo, Grapes, Kiwi, Mango, Orange, and Strawberry.""")
