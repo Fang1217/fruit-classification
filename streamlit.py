@@ -46,7 +46,6 @@ if image is not None:
     # Display the uploaded image
     st.image(image, caption="Uploaded image.", use_column_width=True)
     st.write("")
-    st.write("Classifying...")
 
     # Preprocess the image
     img = Image.open(image)
